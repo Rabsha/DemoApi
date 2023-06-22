@@ -66,6 +66,7 @@ class AppApi
         $fetch = $this->db->query("SELECT * FROM customerdata");
 
         $array = array();
+        $i=1;
         while($row = mysqli_fetch_assoc($fetch))
         {
             $Data = array(
@@ -77,9 +78,10 @@ class AppApi
                 'cnic' => $row['cnic'],
                 'mobile' => $row['mobile'],
             );
-            $array = $Data;
-            echo json_encode($array);
+            $array[$i] = $Data;
+            $i++;
         }
+        echo json_encode($array);
     }
 }
 ?>
