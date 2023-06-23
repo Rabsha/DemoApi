@@ -20,6 +20,9 @@ class AppApi
             case 'FetchApi':
                 $Return = $this->FetchApi();
                 break;
+            case 'UpdateApi':
+                $Return = $this->UpdateApi();
+                break;
             default:
                 $Return = "Invalid Request Params";
         }
@@ -70,6 +73,7 @@ class AppApi
         while($row = mysqli_fetch_assoc($fetch))
         {
             $Data = array(
+                'customerid' => $row['customerid'],
                 'firstName' => $row['firstname'],
                 'lastName' => $row['lastname'],
                 'address' => $row['address'],
@@ -77,11 +81,50 @@ class AppApi
                 'zipCode' => $row['zipCode'],
                 'cnic' => $row['cnic'],
                 'mobile' => $row['mobile'],
+                'SelectedDate' => $row['AddedOn'],
             );
             $array[$i] = $Data;
             $i++;
         }
         echo json_encode($array);
+    }
+    function UpdateApi()
+    {   
+        $Params = array(
+            'Request' => $_POST['data'],
+        );
+        $data = json_decode($Params['Request'],true);
+        $CustomerId = $data["_parts"][1][1];
+        $FirstName = $data["_parts"][2][1];
+        $LastName = $data["_parts"][3][1];
+        $Address = $data["_parts"][4][1];
+        $City = $data["_parts"][5][1];
+        $ZipCode = $data["_parts"][6][1];
+        $Cnic = $data["_parts"][7][1];
+        $Mobile = $data["_parts"][8][1];
+        $Date = $data["_parts"][9][1];
+
+        $Data = array(
+            'CustomerId' => $CustomerId,
+            'firstName' => $FirstName,
+            'lastName' => $LastName,
+            'address' => $Address,
+            'townCity' => $City,
+            'zipCode' => $ZipCode,
+            'cnic' => $Cnic,
+            'mobile' => $Mobile,
+            'SelectedDate' => $Date,
+        );
+
+        $Updated = $this->db->query("UPDATE customerdata SET `firstname`='".$Data['firstName']."', `lastname`='".$Data['lastName']."', `address`='".$Data['address']."', `townCity`='".$Data['townCity']."', `zipCode`='".$Data['zipCode']."', `cnic`='".$Data['cnic']."', `mobile`='".$Data['mobile']."', AddedOn='".$Data['AddedOn']."' WHERE `customerid` = '".$Data['SelectedDate']."'");
+
+        if($Updated)
+        {
+            echo json_encode(['status'=>true,'msg'=>'Data Updated Successfully']);
+        }
+        else{
+            echo json_encode(['status'=>false,'msg'=>'Data Not Updated']);
+        }
     }
 }
 ?>
