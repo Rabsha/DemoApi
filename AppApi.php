@@ -23,6 +23,9 @@ class AppApi
             case 'UpdateApi':
                 $Return = $this->UpdateApi();
                 break;
+            case 'DeleteApi':
+                $Return = $this->DeleteApi();
+                break;
             default:
                 $Return = "Invalid Request Params";
         }
@@ -124,6 +127,25 @@ class AppApi
         }
         else{
             echo json_encode(['status'=>false,'msg'=>'Data Not Updated']);
+        }
+    }
+    function DeleteApi()
+    {
+        $Params = array(
+            'Request' => $_POST['data'],
+        );
+        $data = json_decode($Params['Request'],true);
+
+        $CustomerId = $data["_parts"][1][1];
+
+        $fetch = $this->db->query("DELETE FROM customerdata WHERE customerid = '$CustomerId'");
+        
+        if($fetch)
+        {
+            echo json_encode(['status'=>true,'msg'=>'Data Deleted Successfully']);
+        }
+        else{
+            echo json_encode(['status'=>false,'msg'=>'Data not Deleted']);
         }
     }
 }
